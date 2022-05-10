@@ -85,5 +85,5 @@ plt.show()
 print("\n\nTesting Loss:     ", history1.history['val_loss'][-1])
 print("Testing Accuracy: ", history1.history['val_acc'][-1])
 print("Testing Loss w/ Flooding:      ", history.history['val_loss'][-1])
-print("Testing Accuracy w/ Flooding:  ", history.histoyr['val_acc'][-1])
+print("Testing Accuracy w/ Flooding:  ", history.history['val_acc'][-1])
       
