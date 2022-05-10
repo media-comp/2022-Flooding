@@ -2,15 +2,26 @@ import numpy as np
 import tensorflow as tf
 from keras.layers import Dense
 
+import tensorflow_datasets as tfds
+
 import matplotlib.pyplot as plt
 
-#testing flooding for Fashion-MNIST
+#testing flooding for KMNIST
 
 #import the dataset
 
-print("Testing benefits of Flooding for MLP trained on Fashion-MNIST dataset\n")
+print("Testing benefits of Flooding for MLP trained on KMNIST dataset\n")
 
-(x_train, y_train), (x_test, y_test) = tf.keras.datasets.fashion_mnist.load_data()
+dstrain = tfds.as_numpy(tfds.load('kmnist', split='train', batch_size=-1))
+x_train = dstrain['image']
+y_train = dstrain['label']
+
+
+dstest = tfds.as_numpy(tfds.load('kmnist', split='test', batch_size=-1))
+x_test = dstest['image']
+y_test = dstest['label']
+
+(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
 
 print("Shape of x_train: {} y_train: {}".format(x_train.shape, y_train.shape))
 print("Shape of x_test: {} y_test: {}".format(x_test.shape, y_test.shape))
@@ -45,7 +56,7 @@ model.add(Dense(num_classes, activation="softmax"))
 
 
 #set flood value
-b = 0.09                              #selecting value of b from {0.01 .. 0.1}
+b = 0.01                              #selecting value of b from {0.01 .. 0.1}
 
 #for categorical crossentropy
 def flood_categorical_crossentropy(y_true, y_pred):
@@ -54,11 +65,11 @@ def flood_categorical_crossentropy(y_true, y_pred):
     return loss
 
 SGD = tf.keras.optimizers.SGD(learning_rate=0.1, momentum=0.9,)
-model.compile(loss=flood_loss, optimizer=SGD, metrics=["mse", "acc"])
+model.compile(loss=flood_categorical_crossentropy, optimizer=SGD, metrics=["mse", "acc"])
 history = model.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test))
 model.evaluate(x_test,  y_test, verbose=2)
 
-#plot loss and accuracy
+#plot loss
 '''
 fig = plt.figure()
 plt.plot(history.history['loss'], label="Train loss")
@@ -74,11 +85,11 @@ model1.add(Dense(num_nodes, activation="relu"))
 model1.add(Dense(num_classes, activation="softmax"))
 
 SGD = tf.keras.optimizers.SGD(learning_rate=0.1, momentum=0.9,)
-model1.compile(loss="categorical_crossentropy", optimizer=SGD, metrics=["mse", "acc"])    #using categorical_crossentropy loss
+model1.compile(loss="categorical_crossentropy", optimizer=SGD, metrics=["mse", "acc"])  #using categorical_crossentropy loss
 history1 = model1.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test))
 model1.evaluate(x_test,  y_test, verbose=2)
 
-#plot loss and accuracy
+#plot loss
 '''
 fig = plt.figure()
 plt.plot(history1.history['loss'], label="Train loss")
