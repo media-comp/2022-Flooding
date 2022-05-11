@@ -6,25 +6,29 @@ from keras.layers import Dense
 from keras.callbacks import LambdaCallback
 import keras.backend as K
 import matplotlib.pyplot as plt
+import sys
+
 
 #init flood value, lambda value
-b = K.variable(value=0.01)
+b = K.variable(value=0.01, dtype='float64')
+b._trainable = False
 lamb = 1e-4
 
 # adaptive loss function
 def adaptive_flood_catergorical_crossentropy(b):
+    value = K.eval(b)
     def crossentropy_loss(y_true, y_pred):
         loss = tf.keras.losses.categorical_crossentropy(y_true, y_pred)
-        loss = tf.math.abs(loss - b) + b
+        loss = tf.math.abs(loss - value) + value
         return loss
     return crossentropy_loss
 
 # adaptive rule
 def adapt(epoch):
-    if epoch % 2 == 0:
-        value = b - lamb
-        print("New flooding variable value: ", value)
+    if epoch > 0 and epoch % 2 == 0:
+        value = K.eval(b) - lamb
         K.set_value(b, value)
+        print("Assigned new flooding value: %4f at epoch %d" % (value, epoch))
 
 # callback for adaptive loss function dependent on epoch
 adaptive_cb = LambdaCallback(on_epoch_end=lambda epoch, log: adapt(epoch))
