@@ -54,7 +54,7 @@ def flood_categorical_crossentropy(y_true, y_pred):
     return loss
 
 SGD = tf.keras.optimizers.SGD(learning_rate=0.1, momentum=0.9,)
-model.compile(loss=flood_loss, optimizer=SGD, metrics=["mse", "acc"])
+model.compile(loss=flood_categorical_crossentropy, optimizer=SGD, metrics=["mse", "acc"])
 history = model.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test))
 model.evaluate(x_test,  y_test, verbose=2)
 
