@@ -1,8 +1,10 @@
+from gc import callbacks
 import numpy as np
 import tensorflow as tf
 from keras.layers import Dense
-
 import matplotlib.pyplot as plt
+import datetime
+import os
 
 #testing flooding for MNIST
 
@@ -53,9 +55,13 @@ def flood_categorical_crossentropy(y_true, y_pred):
     loss = tf.math.abs(loss - b) + b
     return loss
 
+#add support for tensorboard
+log_dir="logs/w_flood_mnist/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
+
 SGD = tf.keras.optimizers.SGD(learning_rate=0.1, momentum=0.9,)
 model.compile(loss=flood_categorical_crossentropy, optimizer=SGD, metrics=["mse", "acc"])
-history = model.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test))
+history = model.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test), callbacks=[tensorboard_callback])
 model.evaluate(x_test,  y_test, verbose=2)
 
 #plot loss
@@ -73,9 +79,13 @@ model1.add(Dense(num_nodes, input_shape=(784,), activation="relu"))
 model1.add(Dense(num_nodes, activation="relu"))
 model1.add(Dense(num_classes, activation="softmax"))
 
+#add support for tensorboard
+log_dir_1="logs/wo_flood_mnist/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback_1 = tf.keras.callbacks.TensorBoard(log_dir=log_dir_1, histogram_freq=1)
+
 SGD = tf.keras.optimizers.SGD(learning_rate=0.1, momentum=0.9,)
 model1.compile(loss="categorical_crossentropy", optimizer=SGD, metrics=["mse", "acc"])  #using categorical_crossentropy loss
-history1 = model1.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test))
+history1 = model1.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test),callbacks=[tensorboard_callback_1])
 model1.evaluate(x_test,  y_test, verbose=2)
 
 #plot loss
