@@ -16,9 +16,10 @@ where, b = Flooding constant
 
 Following figures represent the performance of MLP Classifier for the Fashion-MNIST dataset when trained with and without __Flooding__. We notice that while for the model trained without Flooding the testing loss diverges away but, by using __Flooding__ the testing loss stablizes. 
 
-Comparing Accuracies             |  Comparing Losses
-:-------------------------:|:-------------------------:
-![](https://github.com/anubhav2901/Flooding/blob/main/figures/accuracy.png)  |  ![](https://github.com/anubhav2901/Flooding/blob/main/figures/loss.png)
+Dataset |  Comparing Accuracies             |  Comparing Losses
+:-------------------------:|:-------------------------:|:-------------------------: 
+Fashion - MNIST | ![](https://github.com/anubhav2901/Flooding/blob/main/figures/accuracy.png)  |  ![](https://github.com/anubhav2901/Flooding/blob/main/figures/loss.png)
+CIFAR - 10 | ![](https://github.com/media-comp/2022-Flooding/blob/main/figures/accuracy_CIFAR.png) | ![](https://github.com/media-comp/2022-Flooding/blob/main/figures/loss_CIFAR.png)
 
 ## Requirements
 
@@ -26,12 +27,17 @@ Comparing Accuracies             |  Comparing Losses
 > - matplotlib==3.5.2
 > - numpy==1.22.3
 > - tensorflow==2.8.0
+> - protobuf==3.20.1
 
 
 ## Demo
 Run the following command for a demo of Flooding on MNIST dataset
 
 > python demo.py
+
+Run the following command for a demo of Adaptive Flooding on MNIST dataset
+
+> python demo_adaptive.py
 
 ## References
 - Takashi Ishida, Ikko Yamane, Tomoya Sakai, Gang Niu, and Masashi Sugiyama. 2020. Do we need zero training loss after achieving zero training error? In Proceedings of the 37th International Conference on Machine Learning (ICML'20). JMLR.org, Article 428, 4604–4614
