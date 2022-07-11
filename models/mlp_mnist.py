@@ -6,6 +6,26 @@ import matplotlib.pyplot as plt
 import datetime
 import os
 
+# Precision, Recall and f1 score
+from keras import backend as K
+
+def recall_m(y_true, y_pred):
+    true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+    possible_positives = K.sum(K.round(K.clip(y_true, 0, 1)))
+    recall = true_positives / (possible_positives + K.epsilon())
+    return recall
+
+def precision_m(y_true, y_pred):
+    true_positives = K.sum(K.round(K.clip(y_true * y_pred, 0, 1)))
+    predicted_positives = K.sum(K.round(K.clip(y_pred, 0, 1)))
+    precision = true_positives / (predicted_positives + K.epsilon())
+    return precision
+
+def f1_m(y_true, y_pred):
+    precision = precision_m(y_true, y_pred)
+    recall = recall_m(y_true, y_pred)
+    return 2*((precision*recall)/(precision+recall+K.epsilon()))
+
 #testing flooding for MNIST
 
 #import the dataset
@@ -61,6 +81,7 @@ tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram
 
 SGD = tf.keras.optimizers.SGD(learning_rate=0.1, momentum=0.9,)
 model.compile(loss=flood_categorical_crossentropy, optimizer=SGD, metrics=["mse", "acc"])
+#model.compile(loss=flood_categorical_crossentropy, optimizer=SGD, metrics=["acc","mse", precision_m,recall_m,f1_m])
 history = model.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test), callbacks=[tensorboard_callback])
 model.evaluate(x_test,  y_test, verbose=2)
 
@@ -85,6 +106,7 @@ tensorboard_callback_1 = tf.keras.callbacks.TensorBoard(log_dir=log_dir_1, histo
 
 SGD = tf.keras.optimizers.SGD(learning_rate=0.1, momentum=0.9,)
 model1.compile(loss="categorical_crossentropy", optimizer=SGD, metrics=["mse", "acc"])  #using categorical_crossentropy loss
+#model1.compile(loss= "flood_categorical_crossentropy", optimizer=SGD, metrics=["acc","mse", precision_m,recall_m,f1_m])
 history1 = model1.fit(x_train, y_train, epochs=100, validation_data=(x_test, y_test),callbacks=[tensorboard_callback_1])
 model1.evaluate(x_test,  y_test, verbose=2)
 
